@@ -1,5 +1,6 @@
 {
-    "name": "x-fran/g-trends",
+    "name": "idihyaabde/g-trends",
+    "version": "1.0.0",
     "type": "library",
     "description": "Google Trends API for PHP",
     "authors": [
