@@ -31,6 +31,7 @@ class GTrends
     private const GEO_ENDPOINT                      = 'https://trends.google.com/trends/api/explore/pickers/geo';
     private const DAILY_SEARCH_TRENDS_ENDPOINT      = 'https://trends.google.com/trends/api/dailytrends';
     private const REAL_TIME_SEARCH_TRENDS_ENDPOINT  = 'https://trends.google.com/trends/api/realtimetrends';
+    private const STORIES_SUMMARY_TRENDS_ENDPOINT  = 'https://trends.google.com/trends/api/stories/summary';
 
     private array $options = [
         'hl'        => 'en-US',
@@ -76,6 +77,26 @@ class GTrends
         ];
         if ($dataJson = $this->getData(self::DAILY_SEARCH_TRENDS_ENDPOINT, $payload)) {
             return Json\Json::decode(trim(substr($dataJson, 5)), Json\Json::TYPE_ARRAY)['default'];
+        }
+        return [];
+    }
+
+    public function getStoriesSummaryTrends(array $trendingStoryIds = [], $cat = 'all')
+    {
+        $payload = [
+            'hl'    => $this->options['hl'],
+            'tz'    => $this->options['tz'],
+            'cat'   => $cat,
+        ];
+
+        $trendingStoryIds = implode('&', array_map(function ($entry) {
+            return 'id=' . $entry;
+        }, $trendingStoryIds));
+
+        //dd($trendingStoryIds);
+
+        if ($dataJson = $this->getData(self::STORIES_SUMMARY_TRENDS_ENDPOINT . '?' . $trendingStoryIds, $payload)) {
+            return Json\Json::decode(trim(substr($dataJson, 5)), Json\Json::TYPE_ARRAY);
         }
         return [];
     }
@@ -254,6 +275,7 @@ class GTrends
             'maxredirects' => 10,
             'timeout' => 100,
         ]);
+
         $client->setUri($uri);
         $client->setMethod('GET');
 
